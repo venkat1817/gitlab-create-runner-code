@@ -1,0 +1,29 @@
+image: docker:19.03.1
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+services:
+- name: docker:19.03.0-dind
+  entrypoint: ["env", "-u", "DOCKER_HOST"]
+  command: ["dockerd-entrypoint.sh"]
+
+stages:
+  - build
+  - dev-deploy
+  - prod-deploy
+  - docker images
+
+docker-build:
+  stage: build
+  script:
+    - echo "building the docker image:"
+    - ls -ltr
+    - pwd
+    - docker images
+
+  tags:
+    - k8s
+  when: manual
